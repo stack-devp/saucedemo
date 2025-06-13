@@ -41,8 +41,25 @@ export default class CartPage {
   }
 
   async verifyCheckoutButtonIsDisabled(): Promise<void> {
+    // Check if checkout button is disabled or clicking it shows an error
+    const checkoutButton = this.page.locator(Selectors.cartPage.checkoutButton);
+    
+    // First check if button is disabled
+    const isDisabled = await checkoutButton.isDisabled();
+    if (isDisabled) {
+      return; // Button is disabled as expected
+    }
+    
+    // If button is not disabled, check if clicking proceeds to checkout
+    // (SauceDemo allows empty cart checkout, so this test may need adjustment)
     const currentURL = this.page.url();
-    await this.page.locator(Selectors.cartPage.checkoutButton).click();
-    await expect(this.page).toHaveURL(currentURL);
+    await checkoutButton.click();
+    
+    // For SauceDemo, empty cart checkout actually works, so this assertion will fail
+    // This indicates the test scenario needs to be updated to match actual behavior
+    const newURL = this.page.url();
+    if (newURL !== currentURL) {
+      throw new Error('Expected checkout to be prevented with empty cart, but navigation occurred');
+    }
   }
 }

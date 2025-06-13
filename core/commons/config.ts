@@ -13,7 +13,8 @@ export const config = {
   baseUrl: process.env.BASE_URL || 'https://www.saucedemo.com',
   timeout: parseInt(process.env.TEST_TIMEOUT || '30000'),
   retryCount: parseInt(process.env.RETRY_COUNT || '0'),
-  headless: process.env.HEADLESS === 'true',
+  // Force headless in CI environments, otherwise use environment setting
+  headless: process.env.CI === 'true' || process.env.HEADLESS === 'true',
   environment: process.env.ENVIRONMENT || 'dev',
   
   // Test credentials
